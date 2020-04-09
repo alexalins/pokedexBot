@@ -6,6 +6,7 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 path = 'https://pokeapi.co/api/v2/'
 STATE1 = 1
 STATE2 = 2
+pokemon = ''
 
 # mensagem de inicio
 
@@ -23,19 +24,21 @@ def start(update, context):
 
 
 def isPokemon(update, context):
-    pokemon = update.message.text
-    print(pokemon)
-    if len(pokemon) < 1:
+    data = update.message.text
+    print(data)
+    if len(data) < 1:
         message = """Dado inválido. Por favor, ditige o nome ou o cógido do pokémon: """
         context.bot.send_message(
             chat_id=update.effective_chat.id, text=message)
         return STATE1
     else:
+        pokemon = data
         return STATE2
 
 
 def searchPokemon(update, context):
-    pokemon = update.message.text
+    data = requests.get(path+ pokemon)
+    print(data)
 
 # cancelando bot e dando tchau
 def close(update, context):
