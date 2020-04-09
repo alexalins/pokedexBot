@@ -3,7 +3,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler,
                           Filters, RegexHandler, ConversationHandler)
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
-path = 'https://pokeapi.co/api/v2/'
+path = 'https://pokeapi.co/api/v2/pokemon/'
 STATE1 = 1
 
 # mensagem de inicio
@@ -13,14 +13,16 @@ def start(update, context):
     update.message.reply_text(
         message, reply_markup=ReplyKeyboardMarkup([], one_time_keyboard=True))
 
-
-def searchPokemon(update, context):
+def isPokemon(update, context):
     message = 'Digite o nome ou o código do pokémon:'
     update.message.reply_text(message, reply_markup=ReplyKeyboardMarkup([], one_time_keyboard=True))
+    return STATE1
+
+def searchPokemon(update, context):
     pokemon = update.message.text
-    print(pokemon)
+    print(path + pokemon)
     data = requests.get(path + pokemon)
-    print(data)
+    print(data.json())
 
 # cancelando bot e dando tchau
 def close(update, context):
@@ -29,10 +31,7 @@ def close(update, context):
     return ConversationHandler.END
 
 # main
-
-
 def main():
-   
     myToken = ''
     # config
     updater = Updater(token=myToken, use_context=True)
@@ -41,11 +40,11 @@ def main():
     conversation_handler = ConversationHandler(
         entry_points=[
             CommandHandler('start', start),
-            CommandHandler('pokemon', searchPokemon),
+            CommandHandler('pokemon', isPokemon),
             CommandHandler('close', close)
         ],
         states={
-
+            STATE1: [MessageHandler(Filters.text, searchPokemon)],
         },
         fallbacks=[CommandHandler('close', close)])
 
