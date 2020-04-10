@@ -12,14 +12,14 @@ def start(update, context):
                         \nDigite /pokemon para buscar"""
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
-
+#verifica o pokemon
 def isPokemon(update, context):
     message = 'Digite o nome ou o código do pokémon:'
     update.message.reply_text(
         message, reply_markup=ReplyKeyboardMarkup([], one_time_keyboard=True))
     return STATE1
 
-
+#busca na api, verifica se tem e dá os dados
 def searchPokemon(update, context):
     pokemon = update.message.text
     data = requests.get(path + pokemon)
@@ -54,7 +54,6 @@ def close(update, context):
 
 # main
 def main():
-    
     myToken = ''
     # config
     updater = Updater(token=myToken, use_context=True)
